@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF iOS Hack · khangcrtblue</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 20%, #ff6b00 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, #0066ff 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, #1a0a2e, #05010a 80%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 14px;
+            overflow-x: hidden;
+        }
+
+        /* ===== MÀN HÌNH NHẬP KEY ===== */
+        .key-screen {
+            width: 100%;
+            max-width: 400px;
+            background: linear-gradient(160deg, rgba(30, 8, 50, 0.92), rgba(10, 3, 25, 0.95));
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-radius: 28px;
+            border: 2px solid rgba(255, 120, 0, 0.55);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.9),
+                0 0 40px rgba(255, 100, 0, 0.4),
+                inset 0 0 30px rgba(255, 100, 0, 0.1);
+            padding: 32px 24px 28px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .key-screen.hidden { display: none; }
+
+        .ff-logo {
+            font-size: 3.2rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ff8a00, #ff2d00, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 18px #ff6600);
+            animation: glowFF 2s infinite;
+        }
+
+        @keyframes glowFF {
+            0%, 100% { filter: drop-shadow(0 0 12px #ff6600); }
+            50% { filter: drop-shadow(0 0 28px #ffaa00) drop-shadow(0 0 40px #ff4400); }
+        }
+
+        .key-screen h2 {
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            background: linear-gradient(90deg, #ff8a00, #ffcc00, #ff8a00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .key-screen p {
+            color: #b088ff;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .key-input-wrap {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .key-input-wrap i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffaa00;
+            font-size: 1.1rem;
+        }
+
+        #key-input {
+            width: 100%;
+            padding: 15px 18px 15px 48px;
+            background: rgba(20, 5, 40, 0.9);
+            border: 2px solid #6b3fa0;
+            border-radius: 50px;
+            color: #ffe0a0;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            outline: none;
+            transition: all 0.25s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        #key-input::placeholder {
+            color: #7a5ab0;
+            letter-spacing: 1px;
+            font-weight: 400;
+        }
+
+        #key-input:focus {
+            border-color: #ff8a00;
+            box-shadow: 0 0 25px rgba(255, 130, 0, 0.7), inset 0 0 15px rgba(255, 100, 0, 0.15);
+        }
+
+        .key-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff8a00, #ff2d00);
+            border: none;
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 24px rgba(255, 60, 0, 0.5), inset 0 0 20px rgba(255, 200, 0, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .key-btn:hover {
+            background: linear-gradient(135deg, #ffaa00, #ff4400);
+            box-shadow: 0 0 35px #ff8800, 0 8px 28px rgba(255, 60, 0, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .key-btn:active { transform: scale(0.97); }
+
+        .key-error {
+            margin-top: 14px;
+            color: #ff3355;
+            font-size: 0.85rem;
+            min-height: 20px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px #ff0044;
+            font-weight: 600;
+        }
+
+        /* ===== MENU CHÍNH ===== */
+        .menu-panel {
+            width: 100%;
+            max-width: 540px;
+            background: linear-gradient(160deg, rgba(20, 8, 40, 0.94), rgba(8, 2, 20, 0.97));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 28px;
+            border: 2px solid rgba(255, 120, 0, 0.5);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.9),
+                0 0 45px rgba(255, 100, 0, 0.35),
+                inset 0 0 40px rgba(120, 0, 255, 0.08);
+            padding: 18px 16px 22px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 120, 0, 0.08), transparent, rgba(150, 0, 255, 0.08), transparent);
+            animation: rotate 8s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .menu-panel.visible { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.94); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 6px 12px 6px;
+            border-bottom: 2px solid rgba(255, 120, 0, 0.5);
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-title i {
+            font-size: 26px;
+            color: #ff8a00;
+            filter: drop-shadow(0 0 10px #ff6600);
+        }
+
+        .menu-title h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #ffcc00, #ff8a00, #ff4400);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 8px rgba(255, 130, 0, 0.6));
+        }
+
+        .key-badge {
+            background: rgba(40, 10, 70, 0.9);
+            border: 1.5px solid #ff8a00;
+            border-radius: 40px;
+            padding: 5px 14px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: #ffcc66;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: inset 0 0 10px rgba(255, 130, 0, 0.3), 0 0 14px rgba(255, 100, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .key-badge i {
+            color: #ffcc00;
+            font-size: 0.85rem;
+        }
+
+        .toggle-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(60, 20, 100, 0.55), rgba(30, 8, 55, 0.7));
+            border: 1.5px solid rgba(150, 80, 255, 0.35);
+            border-radius: 50px;
+            padding: 7px 7px 7px 18px;
+            transition: all 0.18s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .toggle-item:hover {
+            background: linear-gradient(135deg, rgba(90, 30, 140, 0.7), rgba(50, 15, 85, 0.8));
+            border-color: rgba(255, 140, 0, 0.7);
+            box-shadow: 0 0 20px rgba(255, 120, 0, 0.4);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #f0e0ff;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 6px rgba(150, 80, 255, 0.8);
+        }
+
+        .toggle-label i {
+            width: 26px;
+            font-size: 1.15rem;
+            color: #ff8a00;
+            filter: drop-shadow(0 0 6px #ff6600);
+            text-align: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 66px;
+            height: 36px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #2a1040;
+            border-radius: 40px;
+            transition: .25s;
+            border: 1.5px solid #6b3fa0;
+            box-shadow: inset 0 0 10px #000, 0 0 8px rgba(120, 50, 200, 0.5);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 28px;
+            width: 28px;
+            left: 3px;
+            bottom: 2.5px;
+            background: radial-gradient(circle at 35% 35%, #ffffff, #b090d0);
+            border-radius: 50%;
+            transition: .25s;
+            box-shadow: 0 0 12px rgba(180, 100, 255, 0.8), 0 2px 5px black;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #ff8a00, #ff4400);
+            border-color: #ffcc00;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 130, 0, 0.9);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(31px);
+            background: radial-gradient(circle at 35% 35%, #ffffff, #ffdd88);
+            box-shadow: 0 0 20px #ffee88, 0 2px 8px black;
+        }
+
+        .toggle-status {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #7a5ab0;
+            min-width: 42px;
+            text-align: right;
+            margin-right: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        /* ===== NÚT KÍCH HOẠT ===== */
+        .activate-section {
+            border-top: 1.5px dashed rgba(255, 120, 0, 0.4);
+            padding-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .activate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3a1060, #6b2090);
+            border: 2px solid #ff8a00;
+            border-radius: 50px;
+            color: #ffdd99;
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), inset 0 0 18px rgba(255, 120, 0, 0.25);
+            text-shadow: 0 0 8px rgba(255, 150, 0, 0.8);
+        }
+
+        .activate-btn:hover {
+            background: linear-gradient(135deg, #5a1a90, #8b30b0);
+            box-shadow: 0 0 32px #ff8800, 0 6px 24px rgba(255, 100, 0, 0.8);
+            border-color: #ffcc00;
+            transform: translateY(-2px);
+        }
+
+        .activate-btn:active { transform: scale(0.98); }
+
+        .activate-btn.active {
+            background: linear-gradient(135deg, #00a86b, #00ff88);
+            border-color: #aaffcc;
+            color: #002210;
+            box-shadow: 0 0 35px #00ff88, inset 0 0 25px rgba(255, 255, 255, 0.4);
+            text-shadow: 0 0 6px rgba(0, 255, 136, 0.8);
+        }
+
+        .activate-btn.active:hover {
+            background: linear-gradient(135deg, #00cc80, #00ffaa);
+        }
+
+        .activate-status {
+            text-align: center;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #7a5ab0;
+            transition: all 0.3s;
+            font-weight: 700;
+        }
+
+        .activate-status.on {
+            color: #00ffaa;
+            text-shadow: 0 0 12px #00ff88;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1.5px solid rgba(255, 50, 100, 0.6);
+            border-radius: 50px;
+            color: #ff5588;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 50, 100, 0.15);
+            border-color: #ff4466;
+            color: #ffaabb;
+            box-shadow: 0 0 18px rgba(255, 60, 100, 0.6);
+        }
+
+        @media (max-width: 480px) {
+            .menu-panel { padding: 14px 11px 18px; }
+            .toggle-label { font-size: 0.9rem; gap: 8px; }
+            .toggle-label i { width: 22px; font-size: 1rem; }
+            .switch { width: 58px; height: 32px; }
+            .slider:before { height: 24px; width: 24px; left: 3px; bottom: 2.5px; }
+            input:checked + .slider:before { transform: translateX(27px); }
+            .key-badge { padding: 4px 10px; font-size: 0.7rem; }
+            .menu-title h1 { font-size: 1.2rem; }
+            .toggle-status { font-size: 0.68rem; min-width: 38px; }
+            .activate-btn { font-size: 0.95rem; letter-spacing: 2.5px; padding: 13px; }
+            .key-screen { padding: 26px 18px 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MÀN HÌNH NHẬP KEY ===== -->
+    <div class="key-screen" id="key-screen">
+        <div class="ff-logo"><i class="fas fa-fire"></i></div>
+        <h2>FF iOS HACK</h2>
+        <p>Nhập key để kích hoạt menu</p>
+        <div class="key-input-wrap">
+            <i class="fas fa-key"></i>
+            <input type="text" id="key-input" placeholder="Nhập key?" autocomplete="off" spellcheck="false">
+        </div>
+        <button class="key-btn" id="key-submit"><i class="fas fa-unlock" style="margin-right:8px;"></i>KÍCH HOẠT</button>
+        <div class="key-error" id="key-error"></div>
+    </div>
+
+    <!-- ===== MENU CHÍNH ===== -->
+    <div class="menu-panel" id="menu-panel">
+        <div class="menu-header">
+            <div class="menu-title">
+                <i class="fas fa-fire"></i>
+                <h1>FF iOS HACK</h1>
+            </div>
+            <div class="key-badge">
+                <i class="fas fa-crown"></i>
+                <span>khangblue</span>
+            </div>
+        </div>
+
+        <div class="toggle-grid">
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-crosshairs"></i><span>AIMBOT</span></div>
+                <div class="toggle-status" id="status-aimbot">OFF</div>
+                <label class="switch"><input type="checkbox" id="aimbot"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-head-side-virus"></i><span>BÁM ĐẦU</span></div>
+                <div class="toggle-status" id="status-bamdau">OFF</div>
+                <label class="switch"><input type="checkbox" id="bamdau"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-eye"></i><span>AimConfig</span></div>
+                <div class="toggle-status" id="status-esp">OFF</div>
+                <label class="switch"><input type="checkbox" id="esp"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-running"></i><span>AimBot</span></div>
+                <div class="toggle-status" id="status-speed">OFF</div>
+                <label class="switch"><input type="checkbox" id="speed"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-bolt"></i><span>NHẸ TÂM</span></div>
+                <div class="toggle-status" id="status-nhetam">OFF</div>
+                <label class="switch"><input type="checkbox" id="nhetam"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-crosshairs"></i><span>FIX RUNG TÂM</span></div>
+                <div class="toggle-status" id="status-fixrung">OFF</div>
+                <label class="switch"><input type="checkbox" id="fixrung"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-bullseye"></i><span>FIX LỐ</span></div>
+                <div class="toggle-status" id="status-fixlo">OFF</div>
+                <label class="switch"><input type="checkbox" id="fixlo"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-item">
+                <div class="toggle-label"><i class="fas fa-sync-alt"></i><span>FIX LẠP ĐẠN</span></div>
+                <div class="toggle-status" id="status-fixlapdan">OFF</div>
+                <label class="switch"><input type="checkbox" id="fixlapdan"><span class="slider"></span></label>
+            </div>
+        </div>
+
+        <div class="activate-section">
+            <button class="activate-btn" id="activate-btn">
+                <i class="fas fa-power-off" style="margin-right:8px;"></i>KÍCH HOẠT
+            </button>
+            <div class="activate-status" id="activate-status">CHƯA KÍCH HOẠT</div>
+            <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> THOÁT / KHÓA MENU</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            /* ========== CẤU HÌNH ========== */
+            const SECRET_KEY = 'khangcrtblue';
+
+            /* ========== ÂM THANH "TING" (Web Audio API) ========== */
+            let audioCtx = null;
+
+            function getAudioCtx() {
+                if (!audioCtx) {
+                    try {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    } catch (e) { return null; }
+                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                return audioCtx;
+            }
+
+            function playTing(freq = 1200, duration = 0.12, volume = 0.25) {
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                const now = ctx.currentTime;
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc1.type = 'sine';
+                osc2.type = 'triangle';
+                osc1.frequency.setValueAtTime(freq, now);
+                osc2.frequency.setValueAtTime(freq * 1.5, now);
+
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(volume, now + 0.005);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + duration + 0.02);
+                osc2.stop(now + duration + 0.02);
+            }
+
+            function playTingOn()  { playTing(1400, 0.12, 0.28); }
+            function playTingOff() { playTing(900,  0.10, 0.20); }
+
+            /* ========== PHẦN TỬ ========== */
+            const keyScreen   = document.getElementById('key-screen');
+            const menuPanel   = document.getElementById('menu-panel');
+            const keyInput    = document.getElementById('key-input');
+            const keySubmit   = document.getElementById('key-submit');
+            const keyError    = document.getElementById('key-error');
+            const activateBtn = document.getElementById('activate-btn');
+            const activateStatus = document.getElementById('activate-status');
+            const logoutBtn   = document.getElementById('logout-btn');
+
+            /* ========== ÁNH XẠ TOGGLE ========== */
+            const toggleMap = [
+                { input: 'aimbot',    status: 'status-aimbot' },
+                { input: 'bamdau',    status: 'status-bamdau' },
+                { input: 'esp',       status: 'status-esp' },
+                { input: 'speed',     status: 'status-speed' },
+                { input: 'nhetam',    status: 'status-nhetam' },
+                { input: 'fixrung',   status: 'status-fixrung' },
+                { input: 'fixlo',     status: 'status-fixlo' },
+                { input: 'fixlapdan', status: 'status-fixlapdan' }
+            ];
+
+            function updateStatus(checkbox, statusElement) {
+                if (checkbox.checked) {
+                    statusElement.textContent = 'ON';
+                    statusElement.style.color = '#ffcc00';
+                    statusElement.style.textShadow = '0 0 10px #ff8800';
+                } else {
+                    statusElement.textContent = 'OFF';
+                    statusElement.style.color = '#7a5ab0';
+                    statusElement.style.textShadow = 'none';
+                }
+            }
+
+            toggleMap.forEach(({ input, status }) => {
+                const checkbox = document.getElementById(input);
+                const statusEl = document.getElementById(status);
+                if (checkbox && statusEl) {
+                    updateStatus(checkbox, statusEl);
+                    checkbox.addEventListener('change', function() {
+                        updateStatus(this, statusEl);
+                        this.checked ? playTingOn() : playTingOff();
+                    });
+                }
+            });
+
+            /* ========== MỞ KHÓA MENU ========== */
+            function tryUnlock() {
+                const entered = keyInput.value.trim();
+                if (entered === SECRET_KEY) {
+                    playTing(1500, 0.15, 0.3);
+                    keyError.textContent = '';
+                    keyScreen.classList.add('hidden');
+                    menuPanel.classList.add('visible');
+                    keyInput.value = '';
+                } else {
+                    playTing(400, 0.2, 0.25);
+                    keyError.textContent = '❌ SAI KEY! THỬ LẠI.';
+                    keyInput.style.borderColor = '#ff3355';
+                    keyInput.style.boxShadow = '0 0 20px #ff335588';
+                    setTimeout(() => {
+                        keyInput.style.borderColor = '#6b3fa0';
+                        keyInput.style.boxShadow = 'none';
+                    }, 900);
+                    keyInput.animate([
+                        { transform: 'translateX(0)' },
+                        { transform: 'translateX(-6px)' },
+                        { transform: 'translateX(6px)' },
+                        { transform: 'translateX(-4px)' },
+                        { transform: 'translateX(4px)' },
+                        { transform: 'translateX(0)' }
+                    ], { duration: 350, easing: 'ease-in-out' });
+                }
+            }
+
+            keySubmit.addEventListener('click', tryUnlock);
+            keyInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') tryUnlock();
+            });
+
+            /* ========== NÚT KÍCH HOẠT ========== */
+            let isActivated = false;
+
+            activateBtn.addEventListener('click', function() {
+                isActivated = !isActivated;
+                if (isActivated) {
+                    playTing(1600, 0.14, 0.3);
+                    this.classList.add('active');
+                    this.innerHTML = '<i class="fas fa-check-circle" style="margin-right:8px;"></i>ĐÃ KÍCH HOẠT';
+                    activateStatus.textContent = '✔ ĐANG HOẠT ĐỘNG';
+                    activateStatus.classList.add('on');
+                } else {
+                    playTing(800, 0.12, 0.22);
+                    this.classList.remove('active');
+                    this.innerHTML = '<i class="fas fa-power-off" style="margin-right:8px;"></i>KÍCH HOẠT';
+                    activateStatus.textContent = 'CHƯA KÍCH HOẠT';
+                    activateStatus.classList.remove('on');
+                }
+            });
+
+            /* ========== THOÁT / KHÓA MENU ========== */
+            logoutBtn.addEventListener('click', function() {
+                playTing(700, 0.13, 0.22);
+
+                isActivated = false;
+                activateBtn.classList.remove('active');
+                activateBtn.innerHTML = '<i class="fas fa-power-off" style="margin-right:8px;"></i>KÍCH HOẠT';
+                activateStatus.textContent = 'CHƯA KÍCH HOẠT';
+                activateStatus.classList.remove('on');
+
+                toggleMap.forEach(({ input, status }) => {
+                    const cb = document.getElementById(input);
+                    const st = document.getElementById(status);
+                    if (cb && st) {
+                        cb.checked = false;
+                        updateStatus(cb, st);
+                    }
+                });
+
+                menuPanel.classList.remove('visible');
+                keyScreen.classList.remove('hidden');
+                keyInput.value = '';
+                keyError.textContent = '';
+                keyInput.focus();
+            });
+
+            /* ========== FOCUS Ô KEY ========== */
+            window.addEventListener('load', () => {
+                if (keyScreen && !keyScreen.classList.contains('hidden')) keyInput.focus();
+            });
+        })();
+    </script>
+</body>
+</html>
